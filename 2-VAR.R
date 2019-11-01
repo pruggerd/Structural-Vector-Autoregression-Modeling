@@ -1,41 +1,53 @@
-# hello world
 
+################################################################
+################################################################
 
-#####################################################
-# Assignment 2 for Applied Macroeconometrics
-# Dominik Prugger, Utrecht University, Stdnr: 6236138
+## Name: Structural Vector Autoregression Modelling 
 
-#####################################################
+## 2-VAR and SVAR; I estimate first normal vector autoregressive models for all three time-series and then add a 
+## structural model, where I try to identify the structural parameteres through long-term restrictions. 
 
-
-## Disclaimer: This do-file has all commands used for Assignment 1. For it to be runnable, it would be needed to 
-## one time change the working directory to the used working directory. 
-## E.g. one time replacing the four lines where it is called by ctrl + f
+## Author: Dominik Prugger 
+## Date: October 2019
 
 
 
-#### Step 0: install packages, but only once
-install.packages("vars")
-install.packages("forecast")
-
-library(xts)
-library(ggplot2)
-library(tidyverse)
-library(dygraphs)
-library(quantmod)
-library(plyr)
-library(stats)
-library(vars)
-library(forecast)
+# Begin by deleting all previous working space and loading the required packages
+rm(list = ls())
 
 
-######################## Assignment 2 ##################################################################
-rm(list=ls(all=TRUE))
+# State the packages required for this analysis
+packages <- c("xts", 
+              "ggplot2", 
+              "tidyverse", 
+              "dygraphs", 
+              "quantmod", 
+              "plyr", 
+              "stats", 
+              "stargazer", 
+              "vars", 
+              "forecaste", 
+              "pracma")
 
-#set working directory
-setwd("~/Utrecht/M-Economics/Period 7/Applied Macroeconometrics/Assignments/Assignment 1/Data")
+# Check if these packages are already installed on the computer, if not install them 
+list.of.packages <- packages
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages, repos = "http://cran.us.r-project.org")
+
+# Use sapply to require all packages in one
+sapply(packages, require, character.only = TRUE)
+
+
+# Specify working directory and load the data
+setwd("~/GitHub/Structural-Vector-Autoregression-Modeling")
+
+
+##########################################################################################
+
 
 #load in the data
+rm(list=ls(all=TRUE))
+
 df1 <- read.csv("stationary_series.csv")
 rownames(df1) <- df1$Index
 df1 <- df1[, -1]
@@ -341,8 +353,6 @@ theta2 <- m1 %*% Sigma %*% t(m1)
 theta <- t(chol(theta2))
 Ident_Theta <- as.matrix(diag(3)) - theta
 B_Inverse <- A1 %*% theta
-
-#from emiel
 
 
 

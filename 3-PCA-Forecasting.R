@@ -1,48 +1,50 @@
-# hello world
 
+################################################################
+################################################################
 
-#####################################################
-# Assignment 3 for Applied Macroeconometrics
-# Dominik Prugger, Utrecht University, Stdnr: 6236138
+## Name: Structural Vector Autoregression Modelling 
 
-#####################################################
+## 3-PCA-Forecasting: I load the wide dataset of macroeconomic indicators
 
-
-## Disclaimer: This do-file has all commands used for Assignment 1. For it to be runnable, it would be needed to 
-## one time change the working directory to the used working directory. 
-## E.g. one time replacing the four lines where it is called by ctrl + f
+## Author: Dominik Prugger 
+## Date: October 2019
 
 
 
+# Begin by deleting all previous working space and loading the required packages
+rm(list = ls())
 
 
+# State the packages required for this analysis
+packages <- c("xts", 
+              "ggplot2", 
+              "tidyverse", 
+              "dygraphs", 
+              "quantmod", 
+              "plyr", 
+              "stats", 
+              "stargazer", 
+              "xlsx", 
+              "readxl")
 
-######## Packages and libraries needed
+# Check if these packages are already installed on the computer, if not install them 
+list.of.packages <- packages
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages, repos = "http://cran.us.r-project.org")
 
-#### Step 0: install packages, but only once
-install.packages("vars")
-install.packages("forecast")
-install.packages("xlsx")
+# Use sapply to require all packages in one
+sapply(packages, require, character.only = TRUE)
 
-library(xts)
-library(ggplot2)
-library(tidyverse)
-library(dygraphs)
-library(quantmod)
-library(plyr)
-library(stats)
-library(vars)
-library(forecast)
-library(xlsx)
-library(readxl)
 
+# Specify working directory and load the data
+setwd("~/GitHub/Structural-Vector-Autoregression-Modeling")
 
 
 # Delete old data and read in the new one 
 rm(list=ls(all=TRUE))
 
-setwd("~/Utrecht/M-Economics/Period 7/Applied Macroeconometrics/Assignments/Assignment 3")
 
+################################### Step 0: Read in data and clean ####################################
 
 ###read in the data
 df1 <- read_excel("~/Utrecht/M-Economics/Period 7/Applied Macroeconometrics/Assignments/Assignment 3/FREDQD.xlsx", col_names = FALSE)
@@ -473,32 +475,3 @@ stargazer(reg3, title = "Diebold-Mariano test comparing AR(4) with and without f
 
 dm.test(df_forecast$e2_factor, df_forecast$e2_AR, h = 1, power = 2, alternative = "two.sided")
 ##Therefore choose the factor + AR(4)  model which performs better
-
-
-
-# 5. Using the lasso as regularization technique, estimate the following model: 
-# again for p = 4. Use this model to forecast GDP between 2003Q4-2018Q3.
-#Create a grid for your penalty parameter as log(??) = {???30, ???29.7, ???29.4, . . . , 0},
-#and choose the penalty parameter based on the historical forecast performance. You can use a package to carry out the lasso estimation. Report
-#your findings.
-
-install.packages("HDCI")
-library(HDCI)
-
-#Manage the data matrix for LASSO
-y = df1$GDPC1
-df_lasso <- cbind(y, c(NA, y[-237]), c(NA, NA, y[-c(236, 237)]), c(NA, NA, NA, y[-c(235, 236 ,237)]), c(NA, NA, NA, NA, y[-c(234:237)]))
-
-#now finalize the dataset
-cov <- rbind(rep(NA, 247), data.matrix(df2))[-238, ]
-
-df_lasso <- cbind(df_lasso, cov)
-rownames(df_lasso) <- as.Date(quarters)
-df_lasso_na <- df_lasso[-c(1:4), ]
-#Now do the lasso regression
-try1 <- Lasso(df_lasso_na[, -1], df_lasso_na[, 1], fix.lambda = F)
-
-count(try1$beta != 0)
-
-
-#### Update: Unfortunately, there wasn't enough time to finish the lasso regression 

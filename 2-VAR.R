@@ -300,7 +300,7 @@ ggplot(df_aic_40, aes(Lag, AIC)) +
   geom_line(aes(group = Time, colour = factor(Time)), size = 1.5) 
 
 ##### Choice of using 4 lags for "all" and "e", also partly based on "Many empirical VAR studies impose 12 monthly lags or 4 quarterly
-#lags., Lütkepohl and Kilian Chapter 2. 
+#lags., LÃ¼tkepohl and Kilian Chapter 2. 
 var.test <- VAR(na.omit(df1), lag.max = 20, ic = "AIC", type = "none")
 summary(var.test)
 VARselect(na.omit(df1), type = "both", lag.max = 20)

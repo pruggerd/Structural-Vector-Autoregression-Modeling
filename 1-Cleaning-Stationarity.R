@@ -1,43 +1,45 @@
-# hello world
 
+################################################################
+################################################################
 
-#####################################################
-# Assignment 1 for Applied Macroeconometrics
-# Dominik Prugger, Utrecht University, Stdnr: 6236138
+## Name: Structural Vector Autoregression Modelling 
 
-#####################################################
+## 1-Cleaning-Stationarity; I load and clean the three U.S. macroeconomic time series and check them for seasonality and 
+## stationarity 
 
-
-## Disclaimer: This do-file has all commands used for Assignment 1. For it to be runnable, it would be needed to 
-## one time change the working directory to the used working directory. 
-## E.g. one time replacing the four lines where it is called by ctrl + f
-
-
-
-#specify packages
-install.packages("xts")
-install.packages("dygraphs")
-install.packages("quantmod")
-install.packages("tidyverse")
+## Author: Dominik Prugger 
+## Date: October 2019
 
 
 
-library(xts)
-library(ggplot2)
-library(tidyverse)
-library(dygraphs)
-library(quantmod)
-library(plyr)
-library(stats)
-
-#set working directory
-setwd("~/Utrecht/M-Economics/Period 7/Applied Macroeconometrics/Assignments/Assignment 1/Data")
+# Begin by deleting all previous working space and loading the required packages
+rm(list = ls())
 
 
-#####################################################################################
+# State the packages required for this analysis
+packages <- c("xts", 
+              "ggplot2", 
+              "tidyverse", 
+              "dygraphs", 
+              "quantmod", 
+              "plyr", 
+              "stats", 
+              "stargazer")
 
-#Assignment Exercise  1: Show graphics for full time-periods of 
-#Load data
+# Check if these packages are already installed on the computer, if not install them 
+list.of.packages <- packages
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages, repos = "http://cran.us.r-project.org")
+
+# Use sapply to require all packages in one
+sapply(packages, require, character.only = TRUE)
+
+
+# Specify working directory and load the data
+setwd("~/GitHub/Structural-Vector-Autoregression-Modeling")
+
+
+####################################################################################################
 
 ############# Step 0: Data cleaning 
 
@@ -99,7 +101,7 @@ alltime$earningdefl_a <- alltime$earning_a*100/alltime$pricedef_a
 #export
 
 tmp <- tempfile()
-write.zoo(alltime,sep=",",file=tmp)
+write.zoo(alltime, file="df1.csv", sep=",")
 
 #####################################################################################################
 
@@ -517,8 +519,6 @@ plot(diff_arima, main = "Quadratic loss function between both seasonal component
 
 rm(list=ls(all=TRUE))
 
-setwd("~/Utrecht/M-Economics/Period 7/Applied Macroeconometrics/Assignments/Assignment 1/Data")
-
 
 df1 <- read.csv("df1.csv")
 rownames(df1) <- as.character(df1[, 1])
@@ -557,9 +557,8 @@ plot(df2$log_gnp)
 
 ######################################################################################################################
 
-#install.packages("stargazer")
-library(stargazer)
 
+df2$dif1_earning <- diff(df2$earning_a, 1)
 plot(df2$dif1_earning)
 
 ####What emiel did: 
